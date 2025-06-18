@@ -40,11 +40,9 @@ emacs23: yes
 emacs-snapshot: yes
 xemacs: no
 
-Index: dictionaries-common/support/emacsen/ispell.el
-===================================================================
---- dictionaries-common.orig/support/emacsen/ispell.el	2014-10-14 18:27:17.891529285 +0200
-+++ dictionaries-common/support/emacsen/ispell.el	2014-10-14 18:27:17.887529293 +0200
-@@ -2301,19 +2301,22 @@
+--- a/support/emacsen/ispell.el
++++ b/support/emacsen/ispell.el
+@@ -2316,19 +2316,22 @@ Global `ispell-quit' set to start locati
  				     "unchanged, Character to replace word")))
  		  (let ((inhibit-quit t)
  			(input-valid t))

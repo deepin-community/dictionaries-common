@@ -617,9 +617,10 @@ Needs:
   $options->{'usr_share_dir'}
 
 Should only be used if $dh{ASPELL_SIMPLE} is enabled, after make
-install from aspell dict has been run.  This will get $lang info
-from Makefile.pre. Other info will be extracted from installed .rws
-and .dat. Will install .cwl files after it and try guessing correct
+install from aspell dict has been run.
+This will get $lang info from Makefile.pre.
+Other info will be extracted from installed .rws and .dat.
+Will install .cwl files after it and try guessing correct
 values for auto-compat and auto-hash
 
 =item C<dico_process_autocompat>

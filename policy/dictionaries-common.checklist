@@ -66,6 +66,20 @@ dictionaries-common:
 dictionaries-common-dev:
 ========================
 
+1.29.3:
+  * installdeb-myspell: Remove temporary .bdic files after
+    installation. To keep them, new --dc-keep is added.
+
+1.29.3:
+  * installdeb-myspell: New --dc-clean option added, to enable
+    cleaning of intermediate files (like .bdic).
+
+1.29.0:
+  * installdeb-myspell: Create and install .bdic files.
+    Requires new --bdic (or --bdic-only) option and will fail if
+    /usr/lib/qt5/bin/qwebengine_convert_dict (from
+    qt6-webengine-dev-tools package) is not available.
+
 1.27.0:
   * installdeb.in: Try all packages when called for multiple packages
     instead of exiting after first not found info-hunspell file.

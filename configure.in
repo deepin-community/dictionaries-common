@@ -21,8 +21,10 @@ DATE=`perl -ne 'BEGIN{%m=(Jan=>1,Feb=>2,Mar=>3,Apr=>4,May=>5,Jun=>6, \
                 }' < debian/changelog`
 AC_SUBST(DATE)
 
-AC_OUTPUT([Makefile
+AC_CONFIG_FILES([Makefile
 	   scripts/perl5/Debian/DictionariesCommon.pm
 	   scripts/perl5/Devel/DictionariesCommon.pm
            support/emacsen/startup.el
 	   policy/dsdt-policy.xml])
+
+AC_OUTPUT

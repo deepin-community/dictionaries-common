@@ -126,13 +126,12 @@ all: $(policy).txt \
 # Policy XML document
 
 $(policy).html: $(policy).xml $(html_stylesheet) $(maintainer_scripts)
-	openjade -t sgml -V nochunks -d $(html_stylesheet) \
+	openjade -t sgml -V nochunks -d $(html_stylesheet) -b UTF-8 \
 	  /usr/share/sgml/declaration/xml.decl $< > $@
 
 %.txt: %.html
-	w3m -dump -O iso-8859-1 $< | \
-		perl -pi -e 's/\015 *//g' | \
-		iconv -f iso-8859-1 -t utf-8 > $@
+	w3m -dump -O UTF-8 $< | \
+		perl -pi -e 's/\015 *//g' > $@
 
 #########################################################################
 # Make dictionaries-common debconf config file combining the diferent parts

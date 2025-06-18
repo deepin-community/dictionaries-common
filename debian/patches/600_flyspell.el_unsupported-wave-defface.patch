@@ -7,11 +7,9 @@ accept extras to :underline.
 To be integrated upstream. Will not show a reasonable overlay for
 Emacs < 24.3, but this will go into a separate patch.
 
-Index: dictionaries-common/support/emacsen/flyspell.el
-===================================================================
---- dictionaries-common.orig/support/emacsen/flyspell.el	2014-10-14 18:27:33.327495656 +0200
-+++ dictionaries-common/support/emacsen/flyspell.el	2014-10-14 18:27:33.323495665 +0200
-@@ -447,19 +447,23 @@
+--- a/support/emacsen/flyspell.el
++++ b/support/emacsen/flyspell.el
+@@ -448,19 +448,23 @@ like <img alt=\"Some thing.\">."
  ;;*    Highlighting                                                     */
  ;;*---------------------------------------------------------------------*/
  (defface flyspell-incorrect

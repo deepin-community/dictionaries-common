@@ -2,11 +2,9 @@ Author: Agustin Martin Domingo <agmartin@debian.org>
 Description: Protect against missing (multibyte-string-p) and (string-to-multibyte str) for XEmacs
 
 
-Index: dictionaries-common/support/emacsen/ispell.el
-===================================================================
---- dictionaries-common.orig/support/emacsen/ispell.el	2014-10-14 18:27:24.159515705 +0200
-+++ dictionaries-common/support/emacsen/ispell.el	2014-10-14 18:27:24.155515714 +0200
-@@ -1633,11 +1633,14 @@
+--- a/support/emacsen/ispell.el
++++ b/support/emacsen/ispell.el
+@@ -1648,11 +1648,14 @@ Protects against bogus binding of `enabl
  		(error "No data for dictionary \"%s\", neither in `ispell-local-dictionary-alist' nor in `ispell-dictionary-alist'"
  		       ispell-current-dictionary)))
  	 (str (nth n slot)))

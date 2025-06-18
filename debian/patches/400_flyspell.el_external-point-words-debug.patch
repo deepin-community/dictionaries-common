@@ -1,11 +1,9 @@
 Author: Agustin Martin Domingo <agmartin@debian.org>
 Description: Insert some debugging code in flyspell-external-point-words
 
-Index: dictionaries-common/support/emacsen/flyspell.el
-===================================================================
---- dictionaries-common.orig/support/emacsen/flyspell.el	2014-10-14 18:27:32.099498354 +0200
-+++ dictionaries-common/support/emacsen/flyspell.el	2014-10-14 18:27:32.095498363 +0200
-@@ -1352,7 +1352,10 @@
+--- a/support/emacsen/flyspell.el
++++ b/support/emacsen/flyspell.el
+@@ -1383,7 +1383,10 @@ The buffer to mark them in is `flyspell-
    (let (words-not-found
  	(ispell-otherchars (ispell-get-otherchars))
  	(buffer-scan-pos flyspell-large-region-beg)
@@ -17,7 +15,7 @@ Index: dictionaries-common/support/emacsen/flyspell.el
      (with-current-buffer flyspell-external-ispell-buffer
        (goto-char (point-min))
        ;; Loop over incorrect words, in the order they were reported,
-@@ -1397,7 +1400,11 @@
+@@ -1428,7 +1431,11 @@ The buffer to mark them in is `flyspell-
  			     ;; what flyspell considers the word.
                               ;; Caused by boundary-chars mismatch.
                               ;; Validating seems safe.
@@ -30,7 +28,7 @@ Index: dictionaries-common/support/emacsen/flyspell.el
  			     ;; ispell treats beginning of some TeX
  			     ;; commands as nroff control sequences
  			     ;; and strips them in the list of
-@@ -1428,9 +1435,15 @@
+@@ -1459,9 +1466,15 @@ The buffer to mark them in is `flyspell-
      ;; Warn about not found misspellings
      (dolist (word words-not-found)
        (message "%s: word not found" word))

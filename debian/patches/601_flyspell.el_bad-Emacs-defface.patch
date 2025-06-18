@@ -1,11 +1,9 @@
 Author: Agustin Martin Domingo <agmartin@debian.org>
 Description: Protect agaiinst defface definition syntax not available until 24.4.
 
-Index: dictionaries-common/support/emacsen/flyspell.el
-===================================================================
---- dictionaries-common.orig/support/emacsen/flyspell.el	2014-10-14 18:27:34.563492936 +0200
-+++ dictionaries-common/support/emacsen/flyspell.el	2014-10-14 18:27:34.555492954 +0200
-@@ -446,13 +446,17 @@
+--- a/support/emacsen/flyspell.el
++++ b/support/emacsen/flyspell.el
+@@ -447,13 +447,17 @@ like <img alt=\"Some thing.\">."
  ;;*---------------------------------------------------------------------*/
  ;;*    Highlighting                                                     */
  ;;*---------------------------------------------------------------------*/
@@ -26,7 +24,7 @@ Index: dictionaries-common/support/emacsen/flyspell.el
    "Flyspell face for misspelled words."
    :version "24.4"
    :group 'flyspell)
-@@ -461,13 +465,18 @@
+@@ -462,13 +466,18 @@ like <img alt=\"Some thing.\">."
    (if (featurep 'xemacs)
        '((((class color)) (:foreground "Gold3" :bold t :underline t))
  	(t (:bold t)))
