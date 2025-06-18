@@ -10,6 +10,12 @@ use Debian::Debhelper::Dh_Lib;
 use Devel::DictionariesCommon q(:all);
 
 my $srcdir;
+my $do_bdic;
+my $no_dic;
+my $no_hyphen;
+my $no_thesaurus;
+my $bdic_only;
+my $dc_keep;
 my $do_altlinks = 1;
 
 # Initialize debhelper with extra installdeb-myspell specific options
@@ -19,18 +25,50 @@ init(options => { 'dico-debug'        => \$dh{VERBOSE},
 		  'dico-no-alt-links' => sub { $do_altlinks = undef },
 		  'o2compat'          => sub { warning("Ignoring obsolete \"--o2compat\" option. o2compat support has been removed.") },
 		  'no-o2compat'       => sub { warning("Ignoring obsolete \"--no-o2compat\" option. o2compat support has been removed.") },
-		  'srcdir=s'          => \$srcdir
+		  'bdic'              => \$do_bdic,
+		  'bdic-only'         => \$bdic_only,
+		  'no-dic'            => \$no_dic,
+		  'no-hyphen'         => \$no_hyphen,
+		  'no-thesaurus'      => \$no_thesaurus,
+		  'srcdir=s'          => \$srcdir,
+		  'dc-keep'           => \$dc_keep
 		});
 
 # and do the real work
 
 my $old_destdir;
 my $class          = "myspell";
-my %installdir     = ( "hunspell"    => "/usr/share/hunspell",
-		       "hyphenation" => "/usr/share/hyphen",
-		       "thesauri"    => "/usr/share/mythes");
+my %installdir     = ( "hunspell"      => "/usr/share/hunspell",
+		       "hunspell-bdic" => "/usr/share/hunspell-bdic",
+		       "hyphenation"   => "/usr/share/hyphen",
+		       "thesauri"      => "/usr/share/mythes");
+my @bdic_convert_tools  = ( "/usr/bin/convert-bdic",
+			    "/usr/lib/qt6/libexec/qwebengine_convert_dict",
+			    "/usr/lib/qt5/bin/qwebengine_convert_dict");
+my $bdic_convert_tool;
 
+if ( $bdic_only ){
+  $do_bdic++;
+  $no_dic++;
+  $no_hyphen++;
+  $no_thesaurus++;
+}
 
+# Check for available bdic creation tool
+if ( $do_bdic ){
+  foreach my $tool (@bdic_convert_tools ){
+    if ( -x $tool ){
+      $bdic_convert_tool = $tool;
+      verbose_print("bdic_convert_tool: $bdic_convert_tool");
+      last;
+    }
+  }
+
+  die "$0: No bdic creation tool found. Forgot Build-Dep on qt6-webengine-dev-tools or a supersedind package?  Aborting ...\n"
+      unless $bdic_convert_tool;
+}
+
+# Process different entries
 foreach my $package (@{$dh{DOPACKAGES}}) {
 
   my %datahash    = ();
@@ -63,6 +101,7 @@ foreach my $package (@{$dh{DOPACKAGES}}) {
   # well as mozilla symlinks if it contains an underscore.
   if ( $srcdir && defined $datahash{'DICT'} ){
     foreach my $dictionary ( keys %{$datahash{'DICT'}} ) {
+      last if $no_dic;
       my $dictdir = $installdir{"hunspell"};
       my $destdir = tmpdir ($package) . $dictdir;
       my @alternatives = keys %{$datahash{'DICT'}{$dictionary}};
@@ -103,6 +142,7 @@ foreach my $package (@{$dh{DOPACKAGES}}) {
   # after data in info file
   if ( $srcdir && defined $datahash{'HYPH'} ){
     foreach my $hyphenation ( keys %{$datahash{'HYPH'}} ) {
+      last if $no_hyphen;
       my $hyphdir  = $installdir{"hyphenation"};
       my $destdir  = tmpdir ($package) . $hyphdir;
       print STDERR "Installing HYPH $hyphenation files in $destdir\n";
@@ -121,6 +161,7 @@ foreach my $package (@{$dh{DOPACKAGES}}) {
   # after data in info file
   if ( $srcdir && defined $datahash{'THES'} ){
     foreach my $thesaurus ( keys %{$datahash{'THES'}} ) {
+      last if $no_thesaurus;
       my $thesdir = $installdir{"thesauri"};
       my $destdir = tmpdir ($package) . $thesdir;
       print STDERR "Installing THES $thesaurus files in $destdir\n";
@@ -136,6 +177,40 @@ foreach my $package (@{$dh{DOPACKAGES}}) {
       }
     }
   }
+
+  # Create and install .bdic files
+  if ( $srcdir && defined $datahash{'DICT'} ){
+    my $dictdir = $installdir{"hunspell-bdic"};
+    my $destdir = tmpdir ($package) . $dictdir;
+
+    foreach my $dictionary ( keys %{$datahash{'DICT'}} ) {
+      last unless $do_bdic;
+      my @alternatives = keys %{$datahash{'DICT'}{$dictionary}};
+
+      print STDERR "Creating and installing BDIC $dictionary files in $destdir\n";
+      verbose_print(" Alternatives: " . join(', ',@alternatives));
+      doit ("install", "-d", $destdir);
+      $dictdir =~ s/.*\///;
+
+      my $srcfile    = "$srcdir/$dictionary.dic";
+      my $targetfile = "$srcdir/$dictionary.bdic";
+      doit ("$bdic_convert_tool","$srcfile",$targetfile);
+      doit ("install", "-m644", "$targetfile", $destdir);
+      unlink $targetfile unless $dc_keep;
+
+      # Install normal and Mozilla symlinks for alternative names if needed.
+      if ( $do_altlinks ){
+	foreach my $altlink ( @alternatives) {
+	  my $newlink  = "$altlink.bdic";
+	  my $origfile = "$dictionary.bdic";
+	  unless ( $newlink eq $origfile ){
+	    verbose_print("Installing alternative symlink $newlink to $origfile");
+	    doit ("ln", "-fs", "$origfile", "$destdir/$newlink");
+	  }
+	}
+      }
+    }
+  }
 }
 
 __END__
@@ -148,7 +223,7 @@ thesauri/hyphenation files.
 
 =head1 SYNOPSIS
 
- installdeb-myspell [--srcdir=dir] [--dico-debug] [debhelper options]
+ installdeb-myspell [--srcdir=dir] [options] [debhelper options]
 
 =head1 DESCRIPTION
 
@@ -156,16 +231,19 @@ B<installdeb-myspell> is a debhelper like program to help
 installing myspell/hunspell dicts as well as Openoffice.org
 thesauri or hyphenation files, after contents of an
 F<info-myspell> file whose format is that for old
-Openoffice.org 2. This needs the B<--srcdir> option enabled.
+Openoffice.org 2.
+This program may also create and install dictionaries in
+Chromium hunspell binary dic format (F<.bdic>) if B<--bdic> option
+is set.
+All this needs the B<--srcdir> option enabled.
 
 Note that unless B<--srcdir> option this program will do nothing.
 
-For more details, see
- /usr/share/doc/dictionaries-common/dsdt-policy.txt.
+For more details, see F</usr/share/doc/dictionaries-common/dsdt-policy.txt>.
 
 The actions executed by B<installdeb-myspell> are the
-following (only some of them are done if not in o2
-compatibility mode):
+following
+(only some of them are done if not in o2 compatibility mode):
 
 =over
 
@@ -173,11 +251,13 @@ compatibility mode):
 
 B<installdeb-myspell> installs the necessary
 scraps of code in the F<postinst> and F<postrm> scripts.
+No snippets are currently installed.
 
 =item Language info file
 
 B<installdeb-myspell> will look for a file named F<debian/info-myspell>
-or F<debian/package.info-myspell>. That file contains myspell/hunspell
+or F<debian/package.info-myspell>.
+That file contains myspell/hunspell
 dictionary, OOO thesauri or hyphenation information with lines like
 
 TYPE LANG COUNTRY NAME
@@ -199,24 +279,58 @@ or for a sample thesaurus,
 
  THES en US th_en_US
 
-all with no leading whitespace. Commented lines are allowed.
+all with no leading whitespace.
+Commented lines are allowed.
 
 =item Dictionary, thesaurus and hyphenation files installation
 
 If the B<--srcdir=dir> option is set B<installdeb-myspell> will look for
-the F<.aff/.dic> files in the directory specified by dir and install them
-in the default target directory (F<[tmpdir]/usr/share/hunspell>).
-Base name will be extracted from the F<info-myspell> file (last string in
-the line). If target dict uses the ancient Mozilla hyphen form, it will
+the F<.aff/.dic> files in the directory specified by dir and install
+them in the default target directory
+(F<[tmpdir]/usr/share/hunspell>).
+Base name will be extracted from the F<info-myspell> file
+(last string in the line).
+If target dict uses the ancient Mozilla hyphen form, it will
 be renamed to the lowbar form on installation.
-Same (but the renaming) for hyphenation and thesaurus files, to be installed in
-F<[tmpdir]/usr/share/hyphen> and F<[tmpdir]/usr/share/mythes>.
+
+Same
+(but the renaming)
+for hyphenation and thesaurus files, to be
+installed in F<[tmpdir]/usr/share/hyphen>
+and F<[tmpdir]/usr/share/mythes>.
+
+If B<--bdic> option is set, dicts in Chromium hunspell binary
+dictionary format will also be created and installed.
+This requires /usr/lib/qt5/bin/qwebengine_convert_dict
+(from qt6-webengine-dev-tools package) be available.
+
+If B<--bdic-only> option is set, only dicts in Chromium hunspell
+binary dictionary format
+(F<.bdic>)
+will be handled and dic, hyphen
+and thesaurus disabled
+(even if they have entries in F<info-myspell> file).
+Equivalent to B<--bdic --no-dic --no-hyphen --no-thesaurus>.
+
+B<--no-{dic,hyphen,thesaurus}> options are provided to disable
+handling of those files even if they have entries in
+F<info-myspell> file.
+Mostly useful for testing.
+
+If B<--dc-keep> is set, temporary files will be preserved once
+intallation is complete.
+Currently this only affects .bdic file.
+
+B<--bdic>, B<--bdic-only> and B<--no-{dic,hyphen,thesaurus}>
+options require at least dictionaries-common-dev 1.29.0.
+B<--dc-clean> requires at least dictionaries-common-dev 1.29.3.
 
 =item Dictionaries alternative symlinks creation
 
-B<installdeb-myspell> will, according to info extracted from the F<info-myspell>,
-automatically set B<lang_COUNTRY> symlinks to the dict files installed by
-B<installdeb-myspell>. This will only be done when the B<--srcdir> option is
+B<installdeb-myspell> will, according to info extracted from the
+F<info-myspell>, automatically set B<lang_COUNTRY> symlinks to
+the dict files installed by B<installdeb-myspell>.
+This will only be done when the B<--srcdir> option is
 used.
 
 If B<--srcdir> option is used and the F<info-myspell> file contains something
@@ -227,25 +341,33 @@ like
  DICT es AR es
  ...
 
-B<installdeb-myspell> will automatically set B<es_ES> and B<es_AR> symlinks
+B<installdeb-myspell> will automatically set B<es_ES> and B<es_AR>
+symlinks.
+
+If F<.bdic> is enabled, associated symlinks will be set in the same way.
 
 =item Mozilla spellchecker compatibility
 
 For myspell/hunspell dictionaries, Mozilla had a B<lang{,-COUNTRY}> to names
-translation table using hyphens as separators (and for some languages not using
-country part at all) instead of lowbars.
+translation table using hyphens as separators
+(and for some languages not using country part at all)
+instead of lowbars.
 
-Shortly, that will no longer be the case. Mozilla will also accept
+Shortly, that will no longer be the case.
+Mozilla will also accept
 B<lang_COUNTRY> format for that translation table, no special things
-will be needed. In particular, do not duplicate entries in both lowbar
-and hyphen forms. Use lowbar.
+will be needed.
+In particular, do not duplicate entries in both lowbar
+and hyphen forms.
+Use lowbar.
 
 =item Debconf files
 
-As opposed to B<installdeb-ispell> and B<installdeb-wordlist>, B<installdeb-myspell>
-does nothing related to debconf files, not needed for myspell/hunspell dicts and
-OOO thesauri and hyphenation files. If you need to add debconf stuff with debhelper
-proceed in the usual way and call dh_installdebconf(1) as for any other package.
+As opposed to B<installdeb-ispell> and B<installdeb-wordlist>,
+B<installdeb-myspell> does nothing related to debconf files, not needed
+for myspell/hunspell dicts and OOO thesauri and hyphenation files.
+If you need to add debconf stuff with debhelper proceed in the usual
+way and call dh_installdebconf(1) as for any other package.
 
 =back
 
@@ -259,13 +381,20 @@ proceed in the usual way and call dh_installdebconf(1) as for any other package.
               for myspell/hunspell dict packages, for F<.dic> files in
               Openoffice.org hyphenation packages and for F<.dat/.idx>
               files in Openoffice.org thesaurus packages, installing
-              them if present in the default target directory. Base
-              name will be extracted from the info-myspell file. If
-              this option is specified and files are not present an
+              them if present in the default target directory.
+              Base name will be extracted from the info-myspell file.
+              If this option is specified and files are not present an
               error will appear.
 
 --dico-{no-}alt-links {Process/Do not process} alternative symlinks
               according to info found in the myspell info file.
+
+--bdic        Enable bdic handling.
+
+--bdic-only   Only enable .bdic handling, disable
+              {dic,hyphen,thesaurus} installation.
+
+--no-{dic,hyphen,thesaurus} Disable {dic,hyphen,thesaurus} handling.
 
 The usual debhelper(7) options are accepted.
 
@@ -278,9 +407,10 @@ intended to work together with it.
 
 debhelper(7)
 
-This program is part of the dictionaries-common-dev package.  It is
-intended for use by maintainers of packages containing myspell/hunspell
-dictionaries or Openoffice.org thesauri/hyphenation files.
+This program is part of the dictionaries-common-dev package.
+It is intended for use by maintainers of packages containing
+myspell/hunspell dictionaries or Openoffice.org
+thesauri/hyphenation files.
 See the documentation under /usr/share/doc/dictionaries-common-dev.
 
 =head1 AUTHORS
@@ -289,5 +419,12 @@ Rafael Laboissiere <rafael@debian.org>,
 Agustin Martin <agmartin@debian.org>
 
 =cut
+
+# Local Variables:
+#  mode: flyspell-prog
+#  mode: perl
+#  perl-indent-level: 2
+#  ispell-local-dictionary: "american"
+# End:
 
 #  LocalWords:  debhelper Debian myspell Openoffice

@@ -1,3 +1,6 @@
+Author: Agustin Martin Domingo <agmartin@debian.org>
+Description: make some definitions also work with XEmacs.
+
 Index: dictionaries-common/support/emacsen/ispell.el
 ===================================================================
 --- dictionaries-common.orig/support/emacsen/ispell.el	2014-10-14 18:27:27.247508977 +0200

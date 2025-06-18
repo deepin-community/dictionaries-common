@@ -1,3 +1,242 @@
+dictionaries-common (1.30.10) unstable; urgency=medium
+
+  * support/emacsen: Some changes suggested by Jens Schmidt.
+    - Rename `ispell-load-nomessage' to `debian-ispell-load-nomessage'.
+    - Simplify `emacsen-ispell-default.el' loading.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Sun, 02 Mar 2025 12:52:19 +0100
+
+dictionaries-common (1.30.9) unstable; urgency=medium
+
+  * support/emacsen/debian-ispell.el: Make sure `ispell-load-nomessage' is
+    always defined.
+  * debian/patches: Refresh patches.
+  * configure.in: Use AC_OUTPUT without arguments and pass config files to
+    AC_CONFIG_FILES.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Fri, 28 Feb 2025 11:03:27 +0100
+
+dictionaries-common (1.30.8) unstable; urgency=medium
+
+  * support/emacsen/{startup.el.in,debian-ispell.el}: Silence Emacs load
+    messages in files loaded from dictionaries-common when in batch mode,
+    thanks Jens Schmidt for pointing out this (Closes: #1099027).
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Fri, 28 Feb 2025 02:01:56 +0100
+
+dictionaries-common (1.30.7) unstable; urgency=medium
+
+  * support/emacsen/{debian-ispell.el,startup.el.in}: Add
+    ‘lexical-binding: nil’ directive on first line.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Thu, 27 Feb 2025 00:08:41 +0100
+
+dictionaries-common (1.30.6) unstable; urgency=medium
+
+  * Update po-debconf Catalan translation. Thanks Carles Pina i Estany.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Sun, 23 Feb 2025 23:32:16 +0100
+
+dictionaries-common (1.30.5) unstable; urgency=medium
+
+  * debian-ispell.el: defvar `debian-enchant-dictionary' (Closes: #1098337).
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Wed, 19 Feb 2025 21:32:13 +0100
+
+dictionaries-common (1.30.4) unstable; urgency=medium
+
+  [ Soren Stoutner]
+  * debian/copyright:
+    - Update my email address from soren@stoutner.com to soren@debian.org.
+    - Add 2025 to copyright years for myself.
+  * policy/dsdt-policy.xml.in: Update to reflect the patching of Qt WebEngine
+    instead of using an environment variable to direct it to the .bdic binary
+    dictionary folder (Closes: #1092726).
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Sun, 26 Jan 2025 22:23:02 +0100
+
+dictionaries-common (1.30.3) unstable; urgency=medium
+
+  * Make emacsen-ispell-dicts.el contents predictable. Thanks Roland
+    Clobus (Closes: #1090981).
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Tue, 31 Dec 2024 00:09:36 +0100
+
+dictionaries-common (1.30.2) unstable; urgency=medium
+
+  * scripts/debhelper/*: 'Local Variables': Set 'mode: perl' last mode
+    line.
+  * Improve pod sections: write new sentences in separate lines and other
+    minor issues. Thanks Bjarni Ingi Gislason for pointing out these
+    issues (Closes: #1087355).
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Wed, 20 Nov 2024 23:29:06 +0100
+
+dictionaries-common (1.30.1) unstable; urgency=medium
+
+  * Initial support for enchant under Emacs (Closes: #1082989).
+  * debian/control: Bump Standards-Version. No changes required.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Mon, 14 Oct 2024 00:08:07 +0200
+
+dictionaries-common (1.29.7) unstable; urgency=medium
+
+  * Debian/DictionariesCommon.pm.in:dc_merge_installed_hunspell_dicts:
+    Improve check for $lang_entries->{'emacsen-name'}. Thanks Andreas
+    Schmidt for patch (Closes: #1051329).
+  * debian/control: Bump Standards-Version. No changes required.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Thu, 07 Sep 2023 10:57:00 +0200
+
+dictionaries-common (1.29.6) unstable; urgency=medium
+
+  * support/emacsen/debian-ispell.el: Fix Emacs compilation warnings.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Wed, 30 Aug 2023 14:26:35 +0200
+
+dictionaries-common (1.29.5) unstable; urgency=medium
+
+  [ Soren Stoutner ]
+  * debian/copyright:  Update copyright dates to include 2023.
+  * policy/dsdt-policy.xml.in:  Update to reflect changes in the Qt
+    packaging.
+
+  [ Agustin Martin Domingo ]
+  * installdeb-myspell: Add /usr/bin/convert-bdic as first option.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Tue, 14 Mar 2023 22:17:31 +0100
+
+dictionaries-common (1.29.4) unstable; urgency=medium
+
+  * debian/po/ro.po: Romanian debconf templates translation-revision,
+    thanks Remus-Gabriel Chelu.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Wed, 25 Jan 2023 23:07:33 +0100
+
+dictionaries-common (1.29.3) unstable; urgency=medium
+
+  * installdeb-myspell: Remove temporary .bdic files after
+    installation. To keep them, new --dc-keep is added.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Fri, 16 Dec 2022 09:39:35 +0100
+
+dictionaries-common (1.29.2) unstable; urgency=medium
+
+  * installdeb-myspell: Add debug line about found bdic convert tool.
+  * dsdt-policy.xml.in: Cosmetic indentation changes.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Tue, 13 Dec 2022 18:18:03 +0100
+
+dictionaries-common (1.29.1) unstable; urgency=medium
+
+  * dsdt-policy.xml.in, installdeb-myspell: Fix qwebengine_convert_dict
+    location, qt6 version should be used.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Tue, 13 Dec 2022 17:05:38 +0100
+
+dictionaries-common (1.29.0) unstable; urgency=medium
+
+  [ Soren Stoutner ]
+  * debian/copyright: Add copyright information for Soren Stoutner.
+  * policy/dsdt-policy.xml.in: Add Hunspell binary .bdic
+    information (Closes: #1020387).
+
+  [ Agustin Martin Domingo ]
+  * installdeb-myspell: Create and install .bdic files.
+  * dsdt-policy.xml.in: Improve some programlisting environments.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Tue, 13 Dec 2022 00:18:32 +0100
+
+dictionaries-common (1.28.19) unstable; urgency=medium
+
+  * Do not byte-compile for emacs23 to help with some user corner cases
+    (Closes: #1023558).
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Wed, 16 Nov 2022 17:51:23 +0100
+
+dictionaries-common (1.28.18) unstable; urgency=medium
+
+  * debian/copyright: Fix lintian obsolete-url-in-packaging
+  * dictionaries-common.lintian-overrides:
+    - Fix some tags for mismatched-override messages.
+    - Explain var/lib/?spell/README reason and add override.
+    - Explain emacsen-common-without-dh-elpa and add override.
+    - Explain diversion-for-unknown-file usr/share/dict/words.
+    - Explain some unused-debconf-template occurrences.
+  * dictionaries-common.NEWS: Use normal paragraphs.
+  * scripts/system/dc-debconf-default-value.pl:
+    - Do not use national chars.
+    - Declare as utf-8.
+  * Makefile.in: Create policy document using UTF-8.
+  * policy/dsdt-policy.xml.in: Declare as utf-8.
+  * debian/patches/:
+    - discarded/100_ispell.el_ispell-comment-or-string.patch:
+      remove unused patch.
+    - 500_ispell.el_protect-xemacs-undefined-file-name-base.diff,
+      100_ispell.el_line-number-at-pos.patch: Add description.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Sun, 11 Sep 2022 22:09:43 +0200
+
+dictionaries-common (1.28.17) unstable; urgency=medium
+
+  * support/emacsen/debian-ispell.el: Fix compilation warnings, thanks
+    Vincent Lefevre (Closes: #1017885).
+  * scripts/system/{a,i}spell-autobuildhash: No need to load debconf
+    library here.
+  * debian/control: Bump Standards-Version. No changes required.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Mon, 29 Aug 2022 13:58:13 +0200
+
+dictionaries-common (1.28.16) unstable; urgency=medium
+
+  * scripts/perl5/Debian/DictionariesCommon.pm.in::build_emacsen_support:
+    Escape double quotes in otherchars unless already escaped
+    (Closes: #1016731).
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Mon, 08 Aug 2022 13:32:34 +0200
+
+dictionaries-common (1.28.15) unstable; urgency=medium
+
+  [ Debian Janitor ]
+  * Remove constraints unnecessary since buster:
+    + dictionaries-common: Drop versioned constraint on hunspell-da,
+      hunspell-de-at, hunspell-de-ch, hunspell-de-de, hunspell-eu-es,
+      hunspell-ko, hunspell-uz, hyphen-en-us, myspell-bg, myspell-cs,
+      myspell-da, myspell-de-at, myspell-de-ch, myspell-de-de, myspell-en-au,
+      myspell-eo, myspell-es, myspell-et, myspell-fo, myspell-fr,
+      myspell-fr-gut, myspell-ga, myspell-gd, myspell-gv, myspell-he,
+      myspell-hu, myspell-nb, myspell-nn, myspell-pl, myspell-pt-pt, myspell-ru,
+      myspell-sv-se, myspell-uk and mythes-it in Breaks.
+
+  [ Agustin Martin Domingo ]
+  * debian/copyright: Update copyright year.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Mon, 04 Jul 2022 22:34:24 +0200
+
+dictionaries-common (1.28.14) unstable; urgency=medium
+
+  * Debian/DictionariesCommon.pm.in::dc_merge_installed_hunspell_dicts:
+    - Drop parsed dicts with a locale matching hash-name of a declared
+      dict (Closes: #1000674).
+    - Minor code simplifications.
+    - Improve comments.
+  * debian/control: Bump Standards-Version. No changes required.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Thu, 02 Dec 2021 17:03:03 +0100
+
+dictionaries-common (1.28.13) unstable; urgency=medium
+
+  * Debian/DictionariesCommon.pm.in::dc_merge_installed_hunspell_dicts:
+    - Sort parsed hunspell-locales for hunspell.db reproducibility. Thanks
+      Roland  Clobus (Closes: #1000685).
+    - Fix hash dereferencing. Was causing some randomness in
+      emacsen-ispell-dicts.el as a side effect. Thanks Roland Clobus
+      (Closes: #1000674).
+    - Code readability improvements.
+    - Add some optional debugging code.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Tue, 30 Nov 2021 00:45:09 +0100
+
 dictionaries-common (1.28.12) unstable; urgency=medium
 
   * Debian/DictionariesCommon.pm.in::dc_merge_installed_hunspell_dicts:

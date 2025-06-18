@@ -1,8 +1,9 @@
-Index: dictionaries-common/support/emacsen/ispell.el
-===================================================================
---- dictionaries-common.orig/support/emacsen/ispell.el	2014-10-14 18:27:15.447534550 +0200
-+++ dictionaries-common/support/emacsen/ispell.el	2014-10-14 18:27:15.443534559 +0200
-@@ -3234,8 +3234,10 @@
+Author: Agustin Martin Domingo <agmartin@debian.org>
+Description: make some definitions also work with XEmacs.
+
+--- a/support/emacsen/ispell.el
++++ b/support/emacsen/ispell.el
+@@ -3254,8 +3254,10 @@ ispell-region: Search for first region t
                       "ispell-region: First skip: %s at (pos,line,column): (%s,%s,%s).\n"
                       key
                       (save-excursion (goto-char skip-region-start) (point))
@@ -15,7 +16,7 @@ Index: dictionaries-common/support/emacsen/ispell.el
  	      (ispell-print-if-debug
                 "ispell-region: Continue spell-checking with %s and %s dictionary...\n"
  		program-basename dictionary)
-@@ -3276,7 +3278,9 @@
+@@ -3296,7 +3298,9 @@ ispell-region: Search for first region t
                               "ispell-region: Next skip: %s at (pos,line,column): (%s,%s,%s).\n"
                               key
                               (save-excursion (goto-char skip-region-start) (point))
@@ -26,7 +27,7 @@ Index: dictionaries-common/support/emacsen/ispell.el
                               (save-excursion (goto-char skip-region-start) (current-column))))
  			(set-marker skip-region-start nil))))
  		(setq reg-end (max (point)
-@@ -3584,7 +3588,10 @@
+@@ -3604,7 +3608,10 @@ Returns the sum SHIFT due to changes in
  		;; This error occurs due to filter pipe problems
  		(let* ((ispell-pipe-word (car poss))
  		       (actual-point (marker-position word-start))

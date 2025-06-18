@@ -117,6 +117,20 @@ to make them easy to find and externally visible for now ]] -->
 	<address><email>rene@debian.org</email></address>
       </affiliation>
     </author>
+	<author>
+	  <firstname>
+		Soren
+	  </firstname>
+	  <surname>
+		Stoutner
+	  </surname>
+	  <affiliation>
+		<orgname>
+		  The Debian Project
+		</orgname>
+		<address><email>soren@stoutner.com</email></address>
+	  </affiliation>
+	</author>
     <releaseinfo>
       Release @RELEASE@ (@DATE@)
     </releaseinfo>
@@ -125,19 +139,18 @@ to make them easy to find and externally visible for now ]] -->
     </releaseinfo>
     <copyright>
       <year>
-	1999-2014
+        1999-2014,2022-2023
       </year>
       <holder>
 	Rafael Laboissi&egrave;re, David Coe, Agust&iacute;n
-	Mart&iacute;n Domingo &amp; Ren&eacute; Engelhard
+	Mart&iacute;n Domingo, Ren&eacute; Engelhard &amp; Soren Stoutner
       </holder>
     </copyright>
-    <legalnotice><!-- [[should be legalnotice, but that doesn't print]] -->
+    <legalnotice>
       <para>
-	This text is distributed according to the
-	<ulink url="http://www.gnu.org/copyleft/gpl.html">
-	  GNU General Public License
-	</ulink>.
+	This text is distributed according to the <ulink
+url="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GNU General Public
+	  License, version 2</ulink>.
       </para>
     </legalnotice>
   </articleinfo>
@@ -154,8 +167,9 @@ to make them easy to find and externally visible for now ]] -->
       language-specific ispell/aspell/myspell or hunspell
       dictionaries, the language-specific wordlists, some
       editors like (X)Emacs and jed, some of the mail and news user
-      agents (MUAs, NUAs), and other tools that give the user a
-      choice of dictionaries for spell checking.
+      agents (MUAs, NUAs), web engines built from the Chromium source code (like
+      Qt WebEngine) that use the Hunspell binary dictionary format, and other
+      tools that give the user a choice of dictionaries for spell checking.
     </para>
     <!--    <para>
       From now on the convention
@@ -188,9 +202,10 @@ to make them easy to find and externally visible for now ]] -->
     </itemizedlist>
     <warning>
       <para>
-	emacs-snapshot package should not be affected by this document. It will
-	contain the bleeding edge code from emacs cvs and we have decided to keep
-	it as standalone as possible to minimize interferences from external code.
+	emacs-snapshot package should not be affected by this document.
+	It will contain the bleeding edge code from emacs cvs and we have
+	decided to keep it as standalone as possible to minimize interferences
+	from external code.
       </para>
     </warning>
     <sect2 renderas="sect3"> <title> Advantages For Debian Users </title>
@@ -368,6 +383,13 @@ to make them easy to find and externally visible for now ]] -->
 	    If you are packaging a ispell dictionary, you no longer need to add
 	    an emacsen startup file. It will be automatically generated from the
 	    info file once all the dictionaries are installed.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    If you are packaging a Hunspell dictionary, you need to compile the
+	    binary format of the dictionary according to the instructions in
+	    <xref linkend="hunspell-bdic"/>.
 	  </para>
 	</listitem>
 	<listitem>
@@ -757,6 +779,15 @@ mozilla-browser (<< 1.8+1.1.1-2),
             myspell dictionary package.
           </para>
 	</listitem>
+    <listitem>
+      <para>
+        Hunspell dictionary packages should build-depend on the
+        <literal>convert-bdic</literal> package so that they can use the
+        <command>convert-bdic</command> command to generate the binary
+        <filename>.bdic</filename> dictionary files.
+        For more information see <xref linkend="hunspell-bdic"/>.
+      </para>
+    </listitem>
       </itemizedlist>
     </sect2>
     <!-- * -->
@@ -1195,17 +1226,18 @@ include /usr/share/doc/dictionaries-common/cdbs/dict-common.mk</programlisting>
         dictionary is one of those listed there and the default encoding is the
 	right one you only need to set a symlink, e.g.
       </para>
-      <para>
         <programlisting>
 /usr/share/enchant/ispell/espanol.hash -> /usr/lib/ispell/espa~nol.hash</programlisting>
-      </para>
       <para>
       <emphasis>* myspell/hunspell dictionary files</emphasis>
       </para>
       <para>
         myspell/hunspell dictionary files (<filename>*.dic</filename> and
 	<filename>*.aff</filename>) must be installed in
-	<filename>/usr/share/hunspell</filename>.
+	<filename>/usr/share/hunspell</filename>. Hunspell binary dictionary
+	files (<filename>*.bdic</filename>) must be installed in
+	<filename>/usr/share/hunspell-bdic</filename>. For more information see
+	<xref linkend="hunspell-bdic"/>.
       </para>
       <note>
 	<para>
@@ -1267,15 +1299,11 @@ include /usr/share/doc/dictionaries-common/cdbs/dict-common.mk</programlisting>
 	    argument <quote>configure</quote>.  Here is a template for
 	    inclusion in the postinst script of ispell dictionary packages,
 	  </para>
-	  <para>
 	    <programlisting><![RCDATA[&postinst-ispell;]]></programlisting>
-	  </para>
 	  <para>
 	    And here is a similar template for the wordlist packages,
 	  </para>
-	  <para>
 	    <programlisting><![RCDATA[&postinst-wordlist;]]></programlisting>
-	  </para>
 	  <para>
 	    <command>installdeb-ispell</command> and
 	    <command>installdeb-words</command> will automatically include
@@ -1296,15 +1324,11 @@ include /usr/share/doc/dictionaries-common/cdbs/dict-common.mk</programlisting>
 	    inserted into the postrm script of ispell dictionary packages
 	    (<emphasis>do not forget to edit <literal>#PACKAGE#</literal></emphasis>),
 	  </para>
-	  <para>
 	    <programlisting><![RCDATA[&postrm-ispell;]]></programlisting>
-	  </para>
 	  <para>
 	    The template for the wordlist packages is pretty similar:
 	  </para>
-	  <para>
 	    <programlisting><![RCDATA[&postrm-wordlist;]]></programlisting>
-	  </para>
 	</listitem>
       </itemizedlist>
       <para>
@@ -1322,6 +1346,108 @@ include /usr/share/doc/dictionaries-common/cdbs/dict-common.mk</programlisting>
         in <filename>/usr/share/dict/</filename>, respectively,
 	taking into account the selections made via debconf (see
 	<xref linkend="debconf"/>).
+      </para>
+    </sect2>
+    <!-- * -->
+    <sect2 id="hunspell-bdic" renderas="sect3">
+      <title>Hunspell Binary Dictionaries</title>
+      <!-- ********************************************************************* -->
+      <para>
+        Google's Chromium project developed a binary Hunspell file
+        format used for spell checking by their web engine.
+        The binary format combines the
+        text-based <filename>.dic</filename>
+        and <filename>.aff</filename> files into
+        one <filename>.bdic</filename> binary file.
+        Other web engines that are based on Chromium's code, like Qt
+        WebEngine included in KDE, can also use
+        these <filename>.bdic</filename> dictionaries.
+      </para>
+      <para>
+        Google created a tool called <command>convert_dict</command>
+        that takes the input from a pair of <filename>.dic</filename>
+        and <filename>.aff</filename> files and compiles them into a
+        binary <filename>.bdic</filename> file.
+        Qt distributes a renamed version of this tool
+        called <command>qwebengine_convert_dict</command> that is
+        currently shipped in Debian as part of
+        the <literal>qt6-webengine-dev-tools</literal> package.
+      </para>
+      <para>
+        Because the versions of Qt available in Debian change over time,
+        the latest version of Qt that ships
+        <command>qwebengine_convert_dict</command> will always provide a
+        virtual package named <literal>convert-bdic</literal> which will
+        install a symlink from <filename>/usr/bin/convert-bdic</filename>
+        to the current versioned location of
+        <filename>qwebengine_convert_dict</filename>.
+      </para>
+      <para>
+        Hunspell dictionaries should build-depend on
+        <literal>convert-bdic</literal>. During binary package creation
+        they should compile the binary dictionary by calling a command
+        similar to the following where <filename>xx_XX</filename>
+        corresponds to the language of the Hunspell dictionary.
+        The <filename>.aff</filename> needs to reside in the same
+        directory as the <filename>.dic</filename> during binary compilation so
+        that <command>convert-bdic</command> can locate it.
+      </para>
+      <programlisting>
+convert-bdic path/to/xx_XX.dic path/to/xx_XX.bdic</programlisting>
+      <para>
+        Compiled <filename>.bdic</filename> files should be installed in
+        <filename>/usr/share/hunspell-bdic</filename>.
+        They should be shipped in the same binary package as the
+        corresponding <filename>.dic</filename> and
+        <filename>.aff</filename> files.
+      </para>
+      <para>
+        Debian Qt packages will look for <filename>.bdic</filename>
+	files in <filename>/usr/share/hunspell-bdic/</filename>.
+      </para>
+      <para>
+        There are two bugs in <command>convert-bdic</command>
+        that cause it to fail to build a <filename>.bdic</filename>
+        under certain conditions.
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>
+            <ulink url="https://bugreports.qt.io/browse/QTBUG-107601">Really
+            long words are not supported</ulink>.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="https://bugreports.qt.io/browse/QTBUG-107600">The
+            IGNORE command is not supported</ulink>.
+          </para>
+        </listitem>
+      </itemizedlist>
+      <para>
+        As a workaround while waiting for an upstream solution to these
+        bugs, the <filename>.bdic</filename> files should be created in
+        these scenarios by removing the really longs words from the
+        <filename>.dic</filename> or the <literal>IGNORE</literal>
+        entries from the <filename>.aff</filename> files before
+        compiling the <filename>.bdic</filename> files.
+        Because these entries are of value to the general Hunspell
+        system, the modifications should be made to temporary copies of
+        the <filename>.dic</filename> and <filename>.aff</filename>
+        files that are only used to generate the
+        <filename>.bdic</filename> files and are then discarded.
+      </para>
+      <para>
+        Further information about the <filename>.bdic</filename> file
+        format can be found in the upstream documentation maintained
+        by <ulink
+        url="https://sites.google.com/a/chromium.org/dev/developers/how-tos/editing-the-spell-checking-dictionaries">Google</ulink>
+        and <ulink
+        url="https://doc.qt.io/qt-6/qtwebengine-features.html#spellchecker">Qt</ulink>.
+        The original discussion about the inclusion of Hunspell binary
+        dictionaries in Debian can be found in the <ulink
+        url="https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1020387">dictionaries-common
+        bug report</ulink>.
       </para>
     </sect2>
     <!-- * -->
@@ -1380,15 +1506,11 @@ include /usr/share/doc/dictionaries-common/cdbs/dict-common.mk</programlisting>
 	multiple-choice question as well as another template defining the
 	languages the package provides. This is an example for an ispell dictionary:
       </para>
-      <para>
 	<programlisting><![RCDATA[&templates-ispell;]]></programlisting>
-      </para>
       <para>
 	The example for the wordlist is this one:
       </para>
-      <para>
 	<programlisting><![RCDATA[&templates-wordlist;]]></programlisting>
-      </para>
       <para>
 	The token <literal>#PACKAGE#</literal> must be replaced by *exactly* the
 	name of the package and <literal>#LANGUAGES#</literal> must be replaced
@@ -1495,16 +1617,12 @@ include /usr/share/doc/dictionaries-common/cdbs/dict-common.mk</programlisting>
 	contain (after the <literal>#!/usr/bin/perl</literal> line) exactly the
 	Perl code below,
       </para>
-      <para>
 	<programlisting><![RCDATA[&config-ispell;]]></programlisting>
-      </para>
       <para>
 	wordlist packages other than wamerican must contain (after the
 	<literal>#!/usr/bin/perl</literal> line) exactly the following perl code
       </para>
-      <para>
 	<programlisting><![RCDATA[&config-wordlist;]]></programlisting>
-      </para>
       <para>
 	config file for wamerican is similar to the above, but checking also for
 	existence of
@@ -1641,7 +1759,7 @@ rm -f $tmp</programlisting>
 	<filename>/var/lib/dictionaries-common/hunspell/&lt;package-name&gt;</filename>
 	for myspell/hunspell dictionaries, containing one entry for each aspell
 	(or myspell/hunspell) dictionary it provides.
-    </para>
+      </para>
       <para>
 	If there is an equivalent ispell dictionary,
 	<filename>Emacsen-Name</filename>
@@ -1657,16 +1775,20 @@ rm -f $tmp</programlisting>
       <para>
 	For aspell, add a call to update-dictcommon-aspell to your postinst
 	<programlisting><![RCDATA[&postinst-aspell;]]></programlisting>
-	and to your postrm
-	<programlisting><![RCDATA[&postrm-aspell;]]></programlisting>
       </para>
+      <para>
+	and to your postrm
+      </para>
+	<programlisting><![RCDATA[&postrm-aspell;]]></programlisting>
       <para>
 	For myspell/hunspell, add a call to update-dictcommon-hunspell to your
 	postinst
-	<programlisting><![RCDATA[&postinst-hunspell;]]></programlisting>
-	and to your postrm
-	<programlisting><![RCDATA[&postrm-hunspell;]]></programlisting>
       </para>
+	<programlisting><![RCDATA[&postinst-hunspell;]]></programlisting>
+      <para>
+	and to your postrm
+      </para>
+	<programlisting><![RCDATA[&postrm-hunspell;]]></programlisting>
     </sect2>
     <!-- * -->
     <sect2 renderas="sect3"> <title>Set the right relationships </title>
@@ -1719,9 +1841,7 @@ rm -f $tmp</programlisting>
   This is a summary of the <filename>dictionaries-common(-dev)</filename>
   versions that may imply a dependency or build-dependency in your package.
   </para>
-    <para>
       <programlisting><![RCDATA[&version-checklist;]]></programlisting>
-    </para>
   </appendix>
 
   <!-- ***************************************************************** -->
@@ -1861,9 +1981,7 @@ rm -f $tmp</programlisting>
       sources. This appendix might be out of date, please refer to that file for
       the most recent values.
     </para>
-    <para>
       <programlisting><![RCDATA[&enchant-ispell;]]></programlisting>
-    </para>
   </appendix>
 </article>
 
@@ -1871,7 +1989,7 @@ rm -f $tmp</programlisting>
 <!-- Keep this comment at the end of the file
 Local Variables:
  mode: sgml
- coding: iso-8859-1
+ coding: utf-8
  ispell-local-dictionary: "american"
 End:
 -->

@@ -233,9 +233,11 @@ update-default-[I:ispell:][W:wordlist:] - [IW:update default [I:ispell dictionar
 
 =head1 DESCRIPTION
 
-WARNING: Not to be used from the command line unless you know very well what you are doing.
+WARNING: Not to be used from the command line unless you know very well
+what you are doing.
 
-This program is intended to be called from [I:ispell dictionary:][W:wordlist:] package postinst,
+This program is intended to be called from
+[I:ispell dictionary:][W:wordlist:] package postinst,
 from B<select-default-[I:ispell:][W:wordlist:]> or
 from dictionaries-common postinst.
 

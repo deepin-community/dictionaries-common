@@ -8,11 +8,9 @@ emacs unification problem.
 
 This in practice means do not re-encode in this case. Do nothing with utf-8 buffers.
 
-Index: dictionaries-common/support/emacsen/ispell.el
-===================================================================
---- dictionaries-common.orig/support/emacsen/ispell.el	2014-10-14 18:27:20.503523639 +0200
-+++ dictionaries-common/support/emacsen/ispell.el	2014-10-14 18:27:20.499523647 +0200
-@@ -1661,6 +1661,36 @@
+--- a/support/emacsen/ispell.el
++++ b/support/emacsen/ispell.el
+@@ -1676,6 +1676,36 @@ Protects against bogus binding of `enabl
    (nth 7 (or (assoc ispell-current-dictionary ispell-local-dictionary-alist)
  	     (assoc ispell-current-dictionary ispell-dictionary-alist))))
  
