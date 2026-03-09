@@ -1,5 +1,6 @@
 Author: <agmartin@debian.org>
 Description: Provide a version function and variable, so we know about the original snapshot.
+Forwarded: not-needed
 
 Index: dictionaries-common/support/emacsen/flyspell.el
 ===================================================================

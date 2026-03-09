@@ -1,5 +1,6 @@
 Author: Agustin Martin Domingo <agmartin@debian.org>
 Description: Minor change in ispell pop-up menu
+Forwarded: not-needed
 
 --- a/support/emacsen/ispell.el
 +++ b/support/emacsen/ispell.el

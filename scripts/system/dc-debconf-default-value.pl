@@ -249,18 +249,24 @@ sub dc_manual_alternative (){
 # -------------------------------------------------------------
 # Check if woody (or older) alternative exists and is set to manual
 # -------------------------------------------------------------
-  my $class  = shift;
-  my $file   = "/var/lib/dpkg/alternatives/$alternatives{$class}";
+  my $class       = shift;
+  my $alternative = "$alternatives{$class}";
   my $status;
 
-  if ( -r $file ){
-    open(FILE,"< $file") or return;
-    $status = <FILE>;
-    close FILE;
-    $status = "" unless $status;
-    chomp $status;
-    return "Manual (previous alternative setting)" if ( $status eq "manual" );
-  }
+  # Check if the old alternative exists. Done otherwise.
+  system("update-alternatives --list $alternative > /dev/null 2>&1" )
+    == 0 or return;
+
+  # Check if the old alternative is set to Manual.
+  $status = (grep
+	     (/\s*Status/,
+	      qx(update-alternatives --query $alternative)))[0];
+  $status = "" unless $status;
+  chomp $status;
+  $status =~ s/^\s*Status:\s*//;
+
+  return "Manual (previous alternative setting)"
+    if ( lc($status) eq "manual" );
 }
 
 # -------------------------------------------------------------

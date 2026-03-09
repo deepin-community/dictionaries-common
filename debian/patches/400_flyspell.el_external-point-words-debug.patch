@@ -1,5 +1,6 @@
 Author: Agustin Martin Domingo <agmartin@debian.org>
 Description: Insert some debugging code in flyspell-external-point-words
+Forwarded: not-needed
 
 --- a/support/emacsen/flyspell.el
 +++ b/support/emacsen/flyspell.el

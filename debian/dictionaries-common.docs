@@ -2,3 +2,6 @@ debian/README.problems
 debian/README.emacs
 debian/README.dictionary.lst
 debian/README.jed-support
+debian/README.Debian
+debian/README.source
+policy/dictionaries-common.checklist

@@ -1,5 +1,6 @@
 Author: Agustin Martin Domingo <agmartin@debian.org>
 Description: Change ispell-version to reflect Debian changes
+Forwarded: not-needed
 
 Index: dictionaries-common/support/emacsen/ispell.el
 ===================================================================
