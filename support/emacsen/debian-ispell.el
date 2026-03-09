@@ -93,11 +93,15 @@ See dictionaries-common README.emacs")
 ;;; ----------------------------------------------------------------------
 
 (defun debian-ispell-build-startup-menu (mylist)
+  (if (featurep 'xemacs)
+      (debian-ispell-build-xemacs-startup-menu mylist)
+    (debian-ispell-build-emacs-startup-menu mylist)))
+
+(defun debian-ispell-build-emacs-startup-menu (mylist)
 ;;; ----------------------------------------------------------------------
-;;; Extracted from ispell.el, by Ken Stevens, part of GNU emacs.
-;;; Original code released under the GNU GPL license
+;;; Borrowed from GNU Emacs ispell.el with minor changes.
 ;;; ----------------------------------------------------------------------
-  "Build startup menu, trying to not explicitely load ispell.el"
+  "Build Emacs startup menu, trying to not explicitely load ispell.el"
   (let ((dicts (reverse mylist)))
     (setq ispell-menu-map (make-sparse-keymap "Spell"))
     ;; Define commands in menu in opposite order you want them to appear.
@@ -191,8 +195,13 @@ See dictionaries-common README.emacs")
     '(menu-item "Spell-Check Buffer" ispell-buffer
 		:help "Check spelling of selected buffer"))
   ;;(put 'ispell-region 'menu-enable 'mark-active)
-  (fset 'ispell-menu-map (symbol-value 'ispell-menu-map))
+  (fset 'ispell-menu-map (symbol-value 'ispell-menu-map)))
 
+(defun debian-ispell-build-xemacs-startup-menu (mylist)
+;;; ----------------------------------------------------------------------
+;;; Originally borrowed from GNU Emacs ispell.el.
+;;; ----------------------------------------------------------------------
+  "Build XEmacs startup menu, trying to not explicitely load ispell.el"
   (if (and (featurep 'xemacs)
    	   (featurep 'menubar)
    	   ;;(null ispell-menu-xemacs)
@@ -206,18 +215,19 @@ See dictionaries-common README.emacs")
    	       ["Check Buffer"	      ispell-buffer			    t]
    	       ["Check Comments"      ispell-comments-and-strings	    t]
    	       ["Check Word"	      ispell-word			    t]
-   	       ["Check Region"	      ispell-region  (or (not zmacs-regions) (mark))]
-   	       ["Continue Check"      ispell-continue	      (featurep 'ispell)]
+   	       ["Check Region"	      ispell-region  (or (not zmacs-regions)
+							 (mark))]
+   	       ["Continue Check"      ispell-continue (featurep 'ispell)]
 	       ["Complete Word Frag"  ispell-complete-word-interior-frag   t]
   	       ["Complete Word"       ispell-complete-word		    t]
    	       ["Kill Process"	      (ispell-kill-ispell nil 'clear) (featurep 'ispell)]
    	       ["Customize..."	      (customize-group 'ispell)	    t]
    	       ;; flyspell-mode may not be bound...
    	       ["flyspell"	      flyspell-mode
-   		:style toggle
-   		:selected (and (boundp 'flyspell-mode)
-   			       flyspell-mode)
-   		:active (boundp 'flyspell-mode)]
+   	        :style toggle
+   	        :selected (and (boundp 'flyspell-mode)
+   	        	       flyspell-mode)
+   	        :active (boundp 'flyspell-mode)]
    	       "-"
    	       ["Save Personal Dict"  (ispell-pdict-save t t) (featurep 'ispell)]
    	       ["Change Dictionary"   ispell-change-dictionary	t])))
@@ -240,8 +250,8 @@ See dictionaries-common README.emacs")
    		    (add-menu '("Cmds") "Spell-Check" ispell-menu-xemacs))
    		;; previous
    		(delete-menu-item '("Edit" "Spell")) ; in case already defined
-   		(add-menu '("Edit") "Spell" ispell-menu-xemacs))))))
-  )
+   		(add-menu '("Edit") "Spell" ispell-menu-xemacs)))))
+      ))
 
 (defun debian-ispell-set-startup-menu (&optional force)
   "Make sure ispell startup menu is ready after startup.

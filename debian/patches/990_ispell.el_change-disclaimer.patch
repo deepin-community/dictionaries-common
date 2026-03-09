@@ -1,5 +1,6 @@
 Author: Agustin Martin Domingo <agmartin@debian.org>
 Description: Adding info to the header about Debian ispell.el modifications
+Forwarded: not-needed
 
 Index: dictionaries-common/support/emacsen/ispell.el
 ===================================================================

@@ -1,7 +1,6 @@
 ### ----------------------------------------------
 ###              ispell.el patches
 ### ----------------------------------------------
-100_ispell.el_line-number-at-pos.patch
 200_ispell.el_Xemacs-obsolete-function-alias.patch
 300_ispell.el_XEmacs_window-dedicated-p_syntax.patch
 410_ispell-el_kill-ispell-if-other-frame.patch
@@ -18,7 +17,6 @@
 400_flyspell.el_external-point-words-debug.patch
 500_flyspell-el_resurrect-doublons-highlighting.patch
 600_flyspell.el_unsupported-wave-defface.patch
-601_flyspell.el_bad-Emacs-defface.patch
 990_flyspell.el_change-disclaimer+version.patch
 # ------------------------------------------------
 950_flyspell.el_revert-sgml-lexical-context.patch

@@ -2,27 +2,24 @@ Author: Agustin Martin Domingo <agmartin@debian.org>
 Description: Work around wrong defface format for XEmacs
 
 XEmacs only supports the old format in defface definitions and does not
-accept extras to :underline.
-
-To be integrated upstream. Will not show a reasonable overlay for
-Emacs < 24.3, but this will go into a separate patch.
+accept extras to :underline (Malformed list: :underline).
 
 --- a/support/emacsen/flyspell.el
 +++ b/support/emacsen/flyspell.el
-@@ -448,19 +448,23 @@ like <img alt=\"Some thing.\">."
- ;;*    Highlighting                                                     */
+@@ -445,22 +445,18 @@ like <img alt=\"Some thing.\">."
+ (make-variable-buffer-local 'flyspell-dash-local-dictionary)
+ 
+ ;;*---------------------------------------------------------------------*/
+-;;*    Highlighting                                                     */
++;;*    Highlighting (XEmacs does not support wave face)                 */
  ;;*---------------------------------------------------------------------*/
  (defface flyspell-incorrect
 -  '((((supports :underline (:style wave)))
 -     :underline (:style wave :color "Red1"))
 -    (t
 -     :underline t :inherit error))
-+  (if (featurep 'xemacs)
-+      '((((class color)) (:foreground "OrangeRed" :bold t :underline t))
-+	(t (:bold t)))
-+    '((((supports :underline (:style wave)))
-+       :underline (:style wave :color "Red1"))
-+      (t :underline t :inherit error)))
++  '((((class color)) (:foreground "OrangeRed" :bold t :underline t))
++    (t (:bold t)))
    "Flyspell face for misspelled words."
    :version "24.4"
    :group 'flyspell)
@@ -32,12 +29,8 @@ Emacs < 24.3, but this will go into a separate patch.
 -     :underline (:style wave :color "DarkOrange"))
 -    (t
 -     :underline t :inherit warning))
-+  (if (featurep 'xemacs)
-+      '((((class color)) (:foreground "Gold3" :bold t :underline t))
-+	(t (:bold t)))
-+    '((((supports :underline (:style wave)))
-+       :underline (:style wave :color "DarkOrange"))
-+      (t :underline t :inherit warning)))
++  '((((class color)) (:foreground "Gold3" :bold t :underline t))
++    (t (:bold t)))
    "Flyspell face for words that appear twice in a row.
  See also `flyspell-duplicate-distance'."
    :version "24.4"

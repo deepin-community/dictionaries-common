@@ -34,6 +34,7 @@ lib_dir		:= $(DESTDIR)@LIBDIR@
 cache_dir 	:= $(DESTDIR)@CACHEDIR@
 
 emacs_init_dir  := $(DESTDIR)/etc/emacs/site-start.d
+xemacs_init_dir := $(DESTDIR)/etc/xemacs21/site-start.d
 share_dict_dir	:= $(share_dir)/dictionaries-common
 debconf_dir	:= $(share_dict_dir)/debconf
 emacs_lisp_dir  := $(share_dict_dir)/site-elisp
@@ -232,9 +233,11 @@ install: all
 	install --mode=644 $(policy).html $(policy).txt $(policy_dir)
 
 	# -- Emacsen support
-	install -d $(emacs_lisp_dir) $(emacs_init_dir)
+	install -d $(emacs_lisp_dir) $(emacs_init_dir) $(xemacs_init_dir)
 	install --mode=644 support/emacsen/*.el $(emacs_lisp_dir)
 	touch $(emacs_lisp_dir)/.nosearch
+	cp $(emacs_lisp_dir)/startup.el \
+	  $(xemacs_init_dir)/50dictionaries-common.el
 	mv $(emacs_lisp_dir)/startup.el \
 	  $(emacs_init_dir)/50dictionaries-common.el
 
@@ -246,6 +249,7 @@ install: all
 	install --mode=644 scripts/system/dc-debconf-select.pl \
 		scripts/system/dc-debconf-default-value.pl \
 	  $(share_dict_dir)
+	touch $(share_dict_dir)/elanguages
 
 #########################################################################
 # Mr Proper

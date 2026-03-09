@@ -1,3 +1,58 @@
+dictionaries-common (1.31.3) unstable; urgency=medium
+
+  * debian/patches/:
+    - 601_flyspell.el_bad-Emacs-defface.patch: Remove.
+      Was Emacs only (doing nothing for XEmacs).
+    - 600_flyspell.el_unsupported-wave-defface.patch:
+      Unconditionally use old XEmacs compatible code.
+    - {1,7}_ispell.el*.patch: Use 'line-number-at-pos alias
+      for XEmacs if required.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Mon, 12 Jan 2026 23:11:27 +0100
+
+dictionaries-common (1.31.2) unstable; urgency=medium
+
+  * dictionaries-common.preinst: Protect against wrong symlink.
+  * support/emacsen/startup.el.in: Check for permanent debian-ispell.el
+    file, not for symlink that may be removed before byte compilation.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Tue, 23 Dec 2025 01:31:30 +0100
+
+dictionaries-common (1.31.1) unstable; urgency=medium
+
+  * Do not install /etc/xemacs21/site-start.d/50dictionaries-common.el as
+    a symlink.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Tue, 23 Dec 2025 00:20:52 +0100
+
+dictionaries-common (1.31.0) unstable; urgency=medium
+
+  * Makefile.in,debian/*: Migrate debian/rules fo dh sequencer.
+    (Closes: #1115216)
+  * scripts/system/dc-debconf-default-value.pl: Use update-alternatives to
+    check for old alternative.
+  * debian-ispell.el: Split Emacs and XEmacs spellchecking menus.
+  * debian/*:
+    - dictionaries-common.preinst: Use update-alternatives to check for
+      alternatives.
+    - Use *.install and *.manpages to move away from dh_movefiles
+      and *.files.
+    - Install common docs using debian/dictionaries-common{,-dev}.docs.
+    - dictionaries-common.links: Install 50dictionaries-common.el also for
+      XEmacs.
+    - control: Remove redundant "Rules-Requires-Root: no" field.
+    - patches/*: Mark some patches as Forwarded: not-needed.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Mon, 22 Dec 2025 22:37:38 +0100
+
+dictionaries-common (1.30.11) unstable; urgency=medium
+
+  * policy/dsdt-policy.xml.in: Replace ancient icedove by thunderbird in
+    Suggests field for hunspell/myspell dictionaries.
+  * debian/control: Bump Standards-Version to 4.7.2. No changes.
+
+ -- Agustin Martin Domingo <agmartin@debian.org>  Mon, 13 Oct 2025 00:07:34 +0200
+
 dictionaries-common (1.30.10) unstable; urgency=medium
 
   * support/emacsen: Some changes suggested by Jens Schmidt.

@@ -12,8 +12,7 @@ Build-Depends-Indep: docbook-xml,
                      slice,
                      autoconf,
                      recode
-Standards-Version: 4.7.0
-Rules-Requires-Root: no
+Standards-Version: 4.7.2
 Vcs-Browser: https://salsa.debian.org/debian/dictionaries-common
 Vcs-Git: https://salsa.debian.org/debian/dictionaries-common.git
 Homepage: https://salsa.debian.org/debian/dictionaries-common

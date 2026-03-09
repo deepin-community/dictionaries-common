@@ -14,11 +14,9 @@ debian-{i,a}spell-dictionary to something sane in this case.
    emacs-snapshot: yes
    xemacs: no
 
-Index: dictionaries-common/support/emacsen/ispell.el
-===================================================================
---- dictionaries-common.orig/support/emacsen/ispell.el	2014-10-14 18:27:29.695503625 +0200
-+++ dictionaries-common/support/emacsen/ispell.el	2014-10-14 18:27:29.691503634 +0200
-@@ -821,7 +821,57 @@
+--- a/support/emacsen/ispell.el
++++ b/support/emacsen/ispell.el
+@@ -821,7 +821,63 @@ otherwise (current XEmacs does not suppo
  ;;; The following are used by ispell, and should not be changed.
  ;;; **********************************************************************
  
@@ -64,12 +62,18 @@ Index: dictionaries-common/support/emacsen/ispell.el
 +(if (not (boundp 'debian-ispell-program-name))
 +    (setq debian-ispell-program-name ispell-program-name))
 +
-+;; Define cp1251 as an alias to windows-1251 for xemacs
++;; Some XEmacs compatibility stuff.
 +
-+(if (featurep 'xemacs)
-+    (condition-case ()
-+	(define-coding-system-alias 'cp1251 'windows-1251)
-+      (error nil)))
++(when (featurep 'xemacs)
++  ;; Define cp1251 as an alias to windows-1251 for XEmacs
++  (condition-case ()
++      (define-coding-system-alias 'cp1251 'windows-1251)
++    (error nil))
++
++  ;; XEmacs21.4 does not have `line-number-at-pos'
++  (or (fboundp 'line-number-at-pos)
++      (defalias 'line-number-at-pos 'line-number))
++  )
 +
 +;;; End of Debian changes
 +;;; -----------------------------------------------------------------------

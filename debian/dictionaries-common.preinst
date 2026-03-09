@@ -5,14 +5,15 @@ set -e
 
 case "$1" in install|upgrade)
     # This will clean up the alternatives for ispell-dictionary.hash
-    # set by the pre-Policy ispell dictionary packages
-    # A /var/lib/dpkg/alternatives/ispell-dictionary.hash file is sometimes left
-    # if alternative was set to manual mode. Setting it to --auto ensures removal.
+    # set by the pre-Policy ispell dictionary packages.
+    # An ispell-dictionary.hash file is sometimes left at
+    # dpkg/alternatives dir under /var/lib if alternative
+    # was set to manual mode.
+    # Setting it to --auto ensures removal.
     # Doing also for wordlists just in case.
-    ALTSDIR="/var/lib/dpkg/alternatives"
     ALTERNATIVES="ispell-dictionary.hash dictionary"
     for alternative in $ALTERNATIVES; do
-      if [ -e "$ALTSDIR/$alternative" ]; then
+      if [ $(update-alternatives --list ${alternative} > /dev/null 2>&1 ) ]; then
 	echo " Removing obsolete alternative '$alternative'" >&2
 	DICTS=`LANG=C update-alternatives --display $alternative \
           | grep priority | cut -f1 -d" "`
@@ -29,6 +30,14 @@ case "$1" in install|upgrade)
     dpkg-divert --package dictionaries-common \
       --divert /usr/share/dict/words.pre-dictionaries-common  \
       --rename /usr/share/dict/words
+
+    # This symlink existed during a very short period of time, but better
+    # make sure it is removed before unpacking of new package.
+    XEMACS21_SYMLINK="/etc/xemacs21/site-start.d/50dictionaries-common.el"
+    if [ -L "${XEMACS21_SYMLINK}" ]; then
+      echo "Removing obsolete symlink \"${XEMACS21_SYMLINK}\"" >&2
+      rm ${XEMACS21_SYMLINK}
+    fi
     ;;
 esac
 

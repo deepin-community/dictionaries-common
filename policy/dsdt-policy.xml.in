@@ -735,7 +735,7 @@ Build-Depends-Indep: dictionaries-common-dev</programlisting>
         <programlisting>
 Suggests: hunspell,
  libreoffice-core,
- firefox | firebox-esr | icedove</programlisting>
+ firefox | firebox-esr | thunderbird</programlisting>
 	  </para>
 	</listitem>
 	<listitem>
